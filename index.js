@@ -1,30 +1,22 @@
 'use strict';
 
-var bemjsonToDecl = require('bemjson-to-decl');
-var loaderUtils = require('loader-utils');
+const bemjsonToDecl = require('bemjson-to-decl');
+const nEval = require('node-eval');
 
 /**
- * Converts bemjson file to bemdecl
- *
- * **query**
- *
- * * @param {boolean} stringify
+ * Extract bemdecl from bemjson
  *
  * @param  {string} source
- * @return {string}
  */
 module.exports = function (source) {
   this.cacheable && this.cacheable();
+  const callback = this.async();
 
-  var bemjson = this.exec(source, this.resourcePath);
-  var query = loaderUtils.parseQuery(this.query);
-  var shouldStringify = typeof query.stringify === 'boolean'
-    ? query.stringify
-    : true;
-
-  if (shouldStringify) {
-    return 'module.exports = ' + bemjsonToDecl.stringify(bemjson);
-  }
-
-  return bemjsonToDecl.convert(bemjson);
+  new Promise(resolve => {
+    const bemjson = nEval(source);
+    const decls = bemjsonToDecl.convert(bemjson);
+    resolve(decls);
+  })
+    .then(res => callback(null, res))
+    .catch(callback);
 };

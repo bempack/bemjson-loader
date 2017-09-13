@@ -25,7 +25,7 @@
   "homepage": "https://github.com/sullenor/bemjson-loader#readme",
   "dependencies": {
     "bemjson-to-decl": "^1.0.1",
-    "loader-utils": "^0.2.16"
+    "node-eval": "^1.1.0"
   },
   "devDependencies": {
     "debug": "^2.2.0",
